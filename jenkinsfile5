@@ -61,8 +61,8 @@ podTemplate(yaml: '''
                 } finally {
                     sh 'echo "Archiving artifact"' 
                    def currentResult = currentBuild.result
-                   echo ${currentResult} 
-                   echo currentResult
+                   sh  'echo ${currentResult}'
+                   sh  'echo currentResult'
                    if (currentResult == 'SUCCESS') {
                         sh 'echo "Archiving...."'
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true 
