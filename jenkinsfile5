@@ -29,10 +29,10 @@ podTemplate(yaml: '''
 ''') {
 
     node(POD_LABEL) {
-        environment {
-            gitcommit = "${gitcommit}"
-            def VAR1 =  "Emiliano"
-        }
+
+         def gitcommit = "${gitcommit}"
+         def def VAR1 =  "Emiliano"
+        
         
         stage('Verificación SCM') {
             environment {
