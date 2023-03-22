@@ -31,11 +31,13 @@ podTemplate(yaml: '''
     node(POD_LABEL) {
         environment {
             gitcommit = "${gitcommit}"
-            def VAR1 =  "Emiliano"
+            VAR1 =  "Emiliano"
         }
         
         stage('Verificación SCM') {
-            def VAR2 = " Martin "
+            environment {
+                def VAR2 = " Martin "
+            }
             script {
               checkout scm
               sh "git rev-parse --short HEAD > .git/commit-id"  
@@ -43,8 +45,8 @@ podTemplate(yaml: '''
               sh '''  
                 echo "COMMIT NUMBER:"
                 echo ${gitcommit}
-                echo ${VAR1}
-                echo ${VAR2}
+                echo $VAR1
+                echo $env.VAR2
               '''
             }
            
