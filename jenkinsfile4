@@ -1,0 +1,45 @@
+podTemplate(containers: [
+    containerTemplate(
+        name: 'maven', 
+        image: 'maven:3.8.1-jdk-8', 
+        command: 'sleep', 
+        args: '30d'
+        )
+  ]) {
+
+    node(POD_LABEL) {
+        stage('Buildt') {
+             git url: 'https://github.com/egmartin83/simple-java-maven-app.git', branch: 'master'
+            container('maven') {
+                stage('Build a Maven project') {
+                    sh '''
+                     mvn -B -DskipTests clean package
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
+            container('maven') {
+                stage('test') {
+                    sh '''
+                    mvn test
+                    '''
+                }
+            }
+        }
+        
+        stage('Deliver') {
+            //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
+            container('maven') {
+                stage('declu') {
+                    sh '''
+                    ./jenkins/scripts/deliver.sh
+                    '''
+                }
+            }
+        }
+
+    }
+}
