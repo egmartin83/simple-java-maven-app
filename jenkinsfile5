@@ -56,6 +56,7 @@ podTemplate(yaml: '''
                     }
                 } catch (e){
                    sh   'echo "This will run only if failed"'
+                   throw e
                 } finally {
                    echo "Archiving artifact"
                    def currentResult = currentBuild.result
