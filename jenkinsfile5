@@ -51,10 +51,16 @@ podTemplate(yaml: '''
                     stage('Build a Maven project') {
                         sh '''
                          mvn -B -DskipTests clean package
+                         echo "This will run success"
                         '''
                     }
-                } 
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true   
+                } catch (e){
+                   sh   'echo "This will run only if failed"'
+                } finally {
+                   if (currentResult == 'SUCCESS') {
+                        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true 
+                    }
+                }     
             }
         }
 
