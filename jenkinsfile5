@@ -44,10 +44,11 @@ podTemplate(yaml: '''
               gitcommit = readFile('.git/commit-id').trim()
               sh '''  
                 echo "COMMIT NUMBER:"
-                echo ${gitcommit}
+                echo "${gitcommit}"  
                 echo $VAR1
-                echo $env.VAR2
+                echo "$env.VAR2"
               '''
+             sh 'echo "${VAR2}"'  
             }
            
         }
