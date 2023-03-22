@@ -1,52 +1,55 @@
-podTemplate(yaml: '''
-    apiVersion: v1
-    kind: Pod
-    spec:
-      containers:
-      - name: nodejs
-        image: node:latest
-        command:
-        - sleep
-        args:
-        - 99d
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        command:
-        - sleep
-        args:
-        - 9999999
-        volumeMounts:
-        - name: kaniko-secret
-          mountPath: /kaniko/.docker
-      restartPolicy: Never
-      volumes:
-      - name: kaniko-secret
-        secret:
-            secretName: dockercred
-            items:
-            - key: .dockerconfigjson
-              path: config.json
-''') {
+podTemplate(containers: [
+    containerTemplate(
+        name: 'maven', 
+        image: 'maven:3.8.1-jdk-8', 
+        command: 'sleep', 
+        args: '30d'
+        )
+  ]) {
 
     node(POD_LABEL) {
-        stage('Nodejs Test') {
-            git url:  'https://github.com/egmartin83/nodejspipeline.git', branch: 'main'
-            container('nodejs') {
+        environment {
+            gitcommit = "${gitcommit}"
+        }
+        
+        stage('Verificación SCM') {
+          steps {
+            script {
+              checkout scm
+              sh "git rev-parse --short HEAD > .git/commit-id"  
+              gitcommit = readFile('.git/commit-id').trim()
+            }
+          }  
+        }
+        
+        stage('Buildt') {
+             git url: 'https://github.com/egmartin83/simple-java-maven-app.git', branch: 'master'
+            container('maven') {
                 stage('Build a Maven project') {
                     sh '''
-                    npm install --only=dev
-                    npm test
+                     mvn -B -DskipTests clean package
                     '''
                 }
             }
         }
 
-        stage('Build') {
-            //git url: 'https://github.com/egmartin83/nodejspipeline.git', branch: 'main'
-            container('kaniko') {
-                stage('Build a Go project') {
+        stage('Test') {
+            //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
+            container('maven') {
+                stage('test') {
                     sh '''
-                    /kaniko/executor --context `pwd` --destination egmartin83/nodejspipeline:2.0
+                    mvn test
+                    '''
+                }
+            }
+        }
+        
+        stage('Deliver') {
+            //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
+            container('maven') {
+                stage('declu') {
+                    sh '''
+                    ./jenkins/scripts/deliver.sh
                     '''
                 }
             }
