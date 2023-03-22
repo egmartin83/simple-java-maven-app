@@ -74,11 +74,22 @@ podTemplate(yaml: '''
         stage('Test') {
             //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
             container('maven') {
-                stage('test') {
-                    sh '''
-                    mvn test
-                    '''
-                }
+               try{
+                    stage('test') {
+                        sh '''
+                        mvn test
+                        '''
+                    }
+               } catch(e){
+                   sh   'echo "This will run only if failed"'
+                   throw e
+               }finally {
+                    def currentResult = currentBuild.result ?: 'SUCCESS'
+                    if (currentResult == 'SUCCESS') {
+                        sh 'echo "Testing...."'
+                        junit 'target/surefire-reports/*.xml'
+                    }
+               }
             }
         }
         
