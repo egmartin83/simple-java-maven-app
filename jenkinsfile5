@@ -39,6 +39,7 @@ podTemplate(yaml: '''
               checkout scm
               sh "git rev-parse --short HEAD > .git/commit-id"  
               gitcommit = readFile('.git/commit-id').trim()
+              sh 'echo "COMMIT NUMBER:"'
               sh 'echo ${gitcommit}'
             }
            
@@ -58,14 +59,14 @@ podTemplate(yaml: '''
                    sh   'echo "This will run only if failed"'
                    throw e
                 } finally {
-                   echo "Archiving artifact"
+                    sh 'echo "Archiving artifact"' 
                    def currentResult = currentBuild.result
                    echo ${currentResult} 
                    echo currentResult
                    if (currentResult == 'SUCCESS') {
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true 
                     }
-                   echo "Archived artifact"
+                   sh 'echo "Archived artifact"'
                 }     
             }
         }
