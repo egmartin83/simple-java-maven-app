@@ -30,7 +30,7 @@ podTemplate(yaml: '''
 
     node(POD_LABEL) {
 
-         def gitcommit = "${gitcommit}"
+         def gitcommit = ""
          def VAR1 =  "Emiliano"
         
         
