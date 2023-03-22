@@ -57,10 +57,14 @@ podTemplate(yaml: '''
                 } catch (e){
                    sh   'echo "This will run only if failed"'
                 } finally {
+                   echo "Archiving artifact"
                    def currentResult = currentBuild.result
+                   echo ${currentResult} 
+                   echo currentResult
                    if (currentResult == 'SUCCESS') {
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true 
                     }
+                   echo "Archived artifact"
                 }     
             }
         }
