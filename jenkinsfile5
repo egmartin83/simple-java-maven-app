@@ -40,7 +40,7 @@ podTemplate(yaml: '''
               sh "git rev-parse --short HEAD > .git/commit-id"  
               gitcommit = readFile('.git/commit-id').trim()
               sh 'echo "COMMIT NUMBER:"'
-              sh 'echo ${gitcommit}'
+              sh 'echo gitcommit'
             }
            
         }
@@ -64,6 +64,7 @@ podTemplate(yaml: '''
                    echo ${currentResult} 
                    echo currentResult
                    if (currentResult == 'SUCCESS') {
+                        sh 'echo "Archiving...."'
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true 
                     }
                    sh 'echo "Archived artifact"'
@@ -96,7 +97,7 @@ podTemplate(yaml: '''
             container('kaniko') {
                 stage('Build a Go project') {
                     sh '''
-                    /kaniko/executor --context `pwd` --destination egmartin83/simple-java-maven-app::${gitcommit}
+                    /kaniko/executor --context `pwd` --destination egmartin83/simple-java-maven-app:gitcommit
                     '''
                 }
             }
