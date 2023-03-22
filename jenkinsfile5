@@ -60,7 +60,7 @@ podTemplate(yaml: '''
                    throw e
                 } finally {
                     sh 'echo "Archiving artifact"' 
-                   def currentResult = currentBuild.result
+                   def currentResult = currentBuild.result ?: 'SUCCESS'
                    sh  'echo ${currentResult}'
                    sh  'echo currentResult'
                    if (currentResult == 'SUCCESS') {
