@@ -95,9 +95,7 @@ podTemplate(yaml: '''
         stage('Build & Publish') {
             container('kaniko') {
                 stage('Build a Go project') {
-                    sh '''
-                    /kaniko/executor --context `pwd` --destination egmartin83/simple-java-maven-app:$gitcommit
-                    '''
+                    sh '/kaniko/executor --context `pwd` --destination egmartin83/simple-java-maven-app:"${gitcommit}"' 
                 }
             }
         }
