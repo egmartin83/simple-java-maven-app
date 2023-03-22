@@ -36,7 +36,7 @@ podTemplate(yaml: '''
         
         stage('Verificación SCM') {
             environment {
-               def VAR2 = " Martin "
+               def VAR2 = 'Martin '
             }
             script {
               checkout scm
