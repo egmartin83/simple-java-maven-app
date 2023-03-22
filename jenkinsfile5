@@ -29,7 +29,7 @@ podTemplate(yaml: '''
 ''') {
 
     node(POD_LABEL) {
-        def VAR1 =  'Emiliano'         
+        def gitcommit =  'Emiliano'         
         
         stage('Verificación SCM') {
    
@@ -38,7 +38,7 @@ podTemplate(yaml: '''
             script {
               checkout scm
               sh "git rev-parse --short HEAD > .git/commit-id"  
-              def gitcommit = readFile('.git/commit-id').trim()
+              gitcommit = readFile('.git/commit-id').trim()
               echo "${gitcommit}"  
             }
            
