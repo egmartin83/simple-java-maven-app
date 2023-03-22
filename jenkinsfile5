@@ -41,11 +41,11 @@ podTemplate(yaml: '''
             script {
               checkout scm
               sh "git rev-parse --short HEAD > .git/commit-id"  
-              gitcommit = readFile('.git/commit-id').trim()
+              def gitcommit = readFile('.git/commit-id').trim()
               sh '''  
                 echo "COMMIT NUMBER:"
-                echo "${gitcommit}"  
-                echo $VAR1
+                echo '${gitcommit}'   
+                echo $VAR2
                 echo "$env.VAR2"
               '''
              echo "${VAR2}"  
