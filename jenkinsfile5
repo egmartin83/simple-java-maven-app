@@ -31,12 +31,12 @@ podTemplate(yaml: '''
     node(POD_LABEL) {
         environment {
             gitcommit = "${gitcommit}"
-            VAR1 =  "Emiliano"
+            def VAR1 =  "Emiliano"
         }
         
         stage('Verificación SCM') {
             environment {
-                VAR2 = " Martin "
+               def VAR2 = " Martin "
             }
             script {
               checkout scm
