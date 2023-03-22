@@ -26,7 +26,7 @@ podTemplate(yaml: '''
             items:
             - key: .dockerconfigjson
               path: config.json
-''') { {
+''') {
 
     node(POD_LABEL) {
         environment {
@@ -52,6 +52,11 @@ podTemplate(yaml: '''
                      mvn -B -DskipTests clean package
                     '''
                 }
+                post {
+                    success {
+                        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                    }
+                }    
             }
         }
 
@@ -62,6 +67,11 @@ podTemplate(yaml: '''
                     sh '''
                     mvn test
                     '''
+                }
+                post {
+                    always {
+                        junit 'target/surefire-reports/*.xml'
+                    }
                 }
             }
         }
