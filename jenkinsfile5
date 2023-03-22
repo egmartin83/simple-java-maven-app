@@ -47,16 +47,13 @@ podTemplate(yaml: '''
         stage('Build Maven') {
              git url: 'https://github.com/egmartin83/simple-java-maven-app.git', branch: 'master'
             container('maven') {
-                stage('Build a Maven project') {
-                    sh '''
-                     mvn -B -DskipTests clean package
-                    '''
-                }
-                post {
-                    success {
-                        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                try{
+                    stage('Build a Maven project') {
+                        sh '''
+                         mvn -B -DskipTests clean package
+                        '''
                     }
-                }    
+                } archiveArtifacts artifacts: 'target/*.jar', fingerprint: true   
             }
         }
 
@@ -67,11 +64,6 @@ podTemplate(yaml: '''
                     sh '''
                     mvn test
                     '''
-                }
-                post {
-                    always {
-                        junit 'target/surefire-reports/*.xml'
-                    }
                 }
             }
         }
