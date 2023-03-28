@@ -94,11 +94,13 @@ podTemplate(yaml: '''
         }
         
         stage("build & SonarQube analysis") {
-          node {
-              withSonarQubeEnv('sonarqube') {
-                 sh 'mvn clean package sonar:sonar'
+            container('maven') {
+              node {
+                  withSonarQubeEnv('sonarqube') {
+                     sh 'mvn clean package sonar:sonar'
+                  }
               }
-          }
+            }
         }
         
        stage("Quality Gate"){
