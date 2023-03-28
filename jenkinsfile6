@@ -95,7 +95,7 @@ podTemplate(yaml: '''
         
         stage("build & SonarQube analysis") {
           node {
-              withSonarQubeEnv('sonar') {
+              withSonarQubeEnv('sonarqube') {
                  sh 'mvn clean package sonar:sonar'
               }
           }
