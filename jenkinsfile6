@@ -71,27 +71,6 @@ podTemplate(yaml: '''
             }
         }
 
-        stage('Test') {
-            //git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
-            container('maven') {
-               try{
-                    stage('test') {
-                        sh '''
-                        mvn test
-                        '''
-                    }
-               } catch(e){
-                   sh   'echo "This will run only if failed"'
-                   throw e
-               }finally {
-                    def currentResult = currentBuild.result ?: 'SUCCESS'
-                    if (currentResult == 'SUCCESS') {
-                        sh 'echo "Testing...."'
-                        junit 'target/surefire-reports/*.xml'
-                    }
-               }
-            }
-        }
         
         stage("build & SonarQube analysis") {
             container('maven') {
@@ -99,26 +78,6 @@ podTemplate(yaml: '''
                  sh 'mvn clean package sonar:sonar'
               }
               
-            }
-        }
-        
-        stage('Deliver') {
-            container('maven') {
-                stage('declu') {
-                    sh '''
-                    ./jenkins/scripts/deliver.sh
-                    '''
-                }
-            }
-        }
-        
-        stage('Build & Publish') {
-            container('kaniko') {
-                stage('Build a Go project') {
-                    def command  =  "/kaniko/executor --context `pwd` --destination egmartin83/simple-java-maven-app:" + "${gitcommit}"
-                    echo "${command}"
-                    sh "${command}"  
-                }
             }
         }
 
